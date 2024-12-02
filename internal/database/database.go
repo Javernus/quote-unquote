@@ -13,7 +13,7 @@ import (
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"github.com/dreamsofcode-io/guestbook/internal/config"
+	"github.com/javernus/quote-unquote/internal/config"
 )
 
 var (

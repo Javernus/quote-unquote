@@ -11,9 +11,10 @@ import (
 	"github.com/google/uuid"
 )
 
-type Guest struct {
+type Quote struct {
 	ID        uuid.UUID
 	Message   string
+	Person    string
 	Ip        net.IP
 	CreatedAt time.Time
 	UpdatedAt time.Time

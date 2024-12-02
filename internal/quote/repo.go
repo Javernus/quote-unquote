@@ -1,4 +1,4 @@
-package guest
+package quote
 
 import (
 	"context"
@@ -18,14 +18,14 @@ func NewRepo(db *pgxpool.Pool) *Repo {
 }
 
 var insertSQL = `
-INSERT INTO guest (id, message, created_at, updated_at, ip)
-VALUES ($1, $2, $3, $3, $4)
+INSERT INTO quote (id, message, person, created_at, updated_at, ip)
+VALUES ($1, $2, $3, $3, $4, $5)
 `
 
-func (r *Repo) Insert(ctx context.Context, guest Guest) error {
+func (r *Repo) Insert(ctx context.Context, quote Quote) error {
 	_, err := r.db.Exec(
-		ctx, insertSQL, guest.ID, guest.Message, guest.CreatedAt.UTC(),
-		guest.IP,
+		ctx, insertSQL, quote.ID, quote.Message, quote.Person, quote.CreatedAt.UTC(),
+		quote.IP,
 	)
 	if err != nil {
 		return fmt.Errorf("execute sql: %w", err)
@@ -35,39 +35,39 @@ func (r *Repo) Insert(ctx context.Context, guest Guest) error {
 }
 
 var selectSQL = `
-SELECT id, message, created_at, ip
-FROM guest
+SELECT id, message, person, created_at, ip
+FROM quote
 ORDER BY created_at DESC
 LIMIT $1
 `
 
-func (r *Repo) FindAll(ctx context.Context, count int) ([]Guest, error) {
+func (r *Repo) FindAll(ctx context.Context, count int) ([]Quote, error) {
 	rows, err := r.db.Query(ctx, selectSQL, count)
 	if err != nil {
 		return nil, fmt.Errorf("query: %w", err)
 	}
 
-	res := []Guest{}
+	res := []Quote{}
 
 	for rows.Next() {
-		var guest Guest
+		var quote Quote
 
-		err = rows.Scan(&guest.ID, &guest.Message, &guest.CreatedAt, &guest.IP)
+		err = rows.Scan(&quote.ID, &quote.Message, &quote.CreatedAt, &quote.IP)
 		if err != nil {
 			fmt.Println(err)
 			continue
 		}
 
-		guest.CreatedAt = guest.CreatedAt.UTC()
+		quote.CreatedAt = quote.CreatedAt.UTC()
 
-		res = append(res, guest)
+		res = append(res, quote)
 	}
 
 	return res, nil
 }
 
 var countSQL = `
-SELECT COUNT(*) FROM guest
+SELECT COUNT(*) FROM quote
 `
 
 func (r *Repo) Count(ctx context.Context) (int, error) {

@@ -14,7 +14,7 @@ import (
 )
 
 const count = `-- name: Count :one
-SELECT COUNT(*) FROM guest
+SELECT COUNT(*) FROM quote
 `
 
 func (q *Queries) Count(ctx context.Context) (int64, error) {
@@ -26,20 +26,20 @@ func (q *Queries) Count(ctx context.Context) (int64, error) {
 
 const findAll = `-- name: FindAll :many
 SELECT id, message, ip, created_at, updated_at
-FROM guest
+FROM quote
 ORDER BY created_at DESC
 LIMIT $1
 `
 
-func (q *Queries) FindAll(ctx context.Context, limit int32) ([]Guest, error) {
+func (q *Queries) FindAll(ctx context.Context, limit int32) ([]Quote, error) {
 	rows, err := q.db.Query(ctx, findAll, limit)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Guest
+	var items []Quote
 	for rows.Next() {
-		var i Guest
+		var i Quote
 		if err := rows.Scan(
 			&i.ID,
 			&i.Message,
@@ -58,7 +58,7 @@ func (q *Queries) FindAll(ctx context.Context, limit int32) ([]Guest, error) {
 }
 
 const insert = `-- name: Insert :one
-INSERT INTO guest (id, message, created_at, updated_at, ip)
+INSERT INTO quote (id, message, created_at, updated_at, ip)
 VALUES ($1, $2, $3, $3, $4)
 RETURNING id, message, ip, created_at, updated_at
 `
@@ -70,14 +70,14 @@ type InsertParams struct {
 	Ip        net.IP
 }
 
-func (q *Queries) Insert(ctx context.Context, arg InsertParams) (Guest, error) {
+func (q *Queries) Insert(ctx context.Context, arg InsertParams) (Quote, error) {
 	row := q.db.QueryRow(ctx, insert,
 		arg.ID,
 		arg.Message,
 		arg.CreatedAt,
 		arg.Ip,
 	)
-	var i Guest
+	var i Quote
 	err := row.Scan(
 		&i.ID,
 		&i.Message,

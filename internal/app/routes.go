@@ -4,17 +4,17 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/dreamsofcode-io/guestbook/internal/handler"
+	"github.com/javernus/quote-unquote/internal/handler"
 )
 
 func (a *App) loadRoutes(tmpl *template.Template) {
-	guestbook := handler.New(a.logger, a.db, tmpl)
+	quotebook := handler.New(a.logger, a.db, tmpl)
 
 	files := http.FileServer(http.Dir("./static"))
 
 	a.router.Handle("GET /static/", http.StripPrefix("/static", files))
 
-	a.router.Handle("GET /{$}", http.HandlerFunc(guestbook.Home))
+	a.router.Handle("GET /{$}", http.HandlerFunc(quotebook.Home))
 
-	a.router.Handle("POST /{$}", http.HandlerFunc(guestbook.Create))
+	a.router.Handle("POST /{$}", http.HandlerFunc(quotebook.Create))
 }

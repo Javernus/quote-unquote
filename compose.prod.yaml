@@ -26,13 +26,13 @@ services:
     volumes:
       - letsencrypt:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock
-  guestbook:
-    image: ghcr.io/dreamsofcode-io/guestbook:prod
+  quotebook:
+    image: ghcr.io/dreamsofcode-io/quotebook:prod
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.guestbook.rule=Host(`zenful.cloud`)"
-      - "traefik.http.routers.guestbook.entrypoints=websecure"
-      - "traefik.http.routers.guestbook.tls.certresolver=myresolver"
+      - "traefik.http.routers.quotebook.rule=Host(`zenful.cloud`)"
+      - "traefik.http.routers.quotebook.entrypoints=websecure"
+      - "traefik.http.routers.quotebook.tls.certresolver=myresolver"
       - "com.centurylinklabs.watchtower.enable=true"
     secrets:
       - db-password
@@ -40,7 +40,7 @@ services:
       - POSTGRES_HOST=db
       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
       - POSTGRES_USER=postgres
-      - POSTGRES_DB=guestbook
+      - POSTGRES_DB=quotebook
       - POSTGRES_PORT=5432
       - POSTGRES_SSLMODE=disable
     deploy:
@@ -59,12 +59,12 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=guestbook
+      - POSTGRES_DB=quotebook
       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
     expose:
       - 5432
     healthcheck:
-      test: [ "CMD", "pg_isready" ]
+      test: ["CMD", "pg_isready"]
       interval: 10s
       timeout: 5s
       retries: 5

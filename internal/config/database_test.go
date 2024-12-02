@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/dreamsofcode-io/guestbook/internal/config"
+	"github.com/javernus/quote-unquote/internal/config"
 )
 
 func TestCreatingNewValidation(t *testing.T) {

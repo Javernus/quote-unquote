@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-air -c ./.air.toml &
+$(go env GOPATH)/bin/air -c ./.air.toml &
 tailwindcss \
   -i 'static/css/main.css' \
   -o 'static/css/style.css' \

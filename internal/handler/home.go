@@ -12,11 +12,11 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	// "github.com/x-way/crawlerdetect"
 
-	"github.com/dreamsofcode-io/guestbook/internal/guest"
-	"github.com/dreamsofcode-io/guestbook/internal/repository"
+	"github.com/javernus/quote-unquote/internal/guest"
+	"github.com/javernus/quote-unquote/internal/repository"
 )
 
-type Guestbook struct {
+type Quotebook struct {
 	logger *slog.Logger
 	tmpl   *template.Template
 	repo   *repository.Queries
@@ -24,8 +24,8 @@ type Guestbook struct {
 
 func New(
 	logger *slog.Logger, db *pgxpool.Pool, tmpl *template.Template,
-) *Guestbook {
-	return &Guestbook{
+) *Quotebook {
+	return &Quotebook{
 		tmpl:   tmpl,
 		repo:   repository.New(db),
 		logger: logger,
@@ -33,7 +33,7 @@ func New(
 }
 
 type indexPage struct {
-	Guests []repository.Guest
+	Quotes []repository.Quote
 	Total  int64
 }
 
@@ -41,10 +41,10 @@ type errorPage struct {
 	ErrorMessage string
 }
 
-func (h *Guestbook) Home(w http.ResponseWriter, r *http.Request) {
-	guests, err := h.repo.FindAll(r.Context(), 200)
+func (h *Quotebook) Home(w http.ResponseWriter, r *http.Request) {
+	quotes, err := h.repo.FindAll(r.Context(), 200)
 	if err != nil {
-		h.logger.Error("failed to find guests", slog.Any("error", err))
+		h.logger.Error("failed to find quotes", slog.Any("error", err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -58,12 +58,12 @@ func (h *Guestbook) Home(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Content-Type", "text/html")
 	h.tmpl.ExecuteTemplate(w, "index.html", indexPage{
-		Guests: guests,
+		Quotes: quotes,
 		Total:  count,
 	})
 }
 
-func (h *Guestbook) Create(w http.ResponseWriter, r *http.Request) {
+func (h *Quotebook) Create(w http.ResponseWriter, r *http.Request) {
 	// if crawlerdetect.IsCrawler(r.Header.Get("User-Agent")) {
 	// 	w.WriteHeader(http.StatusUnauthorized)
 	// 	return
@@ -107,21 +107,21 @@ func (h *Guestbook) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	guest, err := guest.NewGuest(message, ip)
+	quote, err := quote.NewQuote(message, ip)
 	if err != nil {
-		h.logger.Error("failed to create guest", slog.Any("error", err))
+		h.logger.Error("failed to create quote", slog.Any("error", err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	_, err = h.repo.Insert(r.Context(), repository.InsertParams{
-		ID:        guest.ID,
-		Message:   guest.Message,
-		CreatedAt: guest.CreatedAt,
-		Ip:        guest.IP,
+		ID:        quote.ID,
+		Message:   quote.Message,
+		CreatedAt: quote.CreatedAt,
+		Ip:        quote.IP,
 	})
 	if err != nil {
-		h.logger.Error("failed to insert guest", slog.Any("error", err))
+		h.logger.Error("failed to insert quote", slog.Any("error", err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

@@ -23,23 +23,23 @@ services:
     volumes:
       - letsencrypt:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock
-  guestbook:
-    image: ghcr.io/dreamsofcode-io/guestbook:${GIT_COMMIT_HASH:-prod}
+  quotebook:
+    image: ghcr.io/dreamsofcode-io/quotebook:${GIT_COMMIT_HASH:-prod}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.middlewares.guestbook-ratelimit.ratelimit.average=20"
-      - "traefik.http.routers.guestbook.rule=Host(`zenful.cloud`) && !Method(`POST`)"
-      - "traefik.http.services.guestbook.loadbalancer.server.port=8080"
-      - "traefik.http.routers.guestbook.entrypoints=websecure"
-      - "traefik.http.routers.guestbook.tls.certresolver=myresolver"
-      - "traefik.http.routers.guestbook.middlewares=guestbook-ratelimit"
+      - "traefik.http.middlewares.quotebook-ratelimit.ratelimit.average=20"
+      - "traefik.http.routers.quotebook.rule=Host(`zenful.cloud`) && !Method(`POST`)"
+      - "traefik.http.services.quotebook.loadbalancer.server.port=8080"
+      - "traefik.http.routers.quotebook.entrypoints=websecure"
+      - "traefik.http.routers.quotebook.tls.certresolver=myresolver"
+      - "traefik.http.routers.quotebook.middlewares=quotebook-ratelimit"
       # Define separate router for POST methods
-      - "traefik.http.middlewares.guestbook-ratelimit-post.ratelimit.average=1"
-      - "traefik.http.middlewares.guestbook-ratelimit-post.ratelimit.period=1m"
-      - "traefik.http.routers.guestbook-post.rule=Host(`zenful.cloud`) && Method(`POST`)"
-      - "traefik.http.routers.guestbook-post.middlewares=guestbook-ratelimit-post"
-      - "traefik.http.routers.guestbook-post.entrypoints=websecure"
-      - "traefik.http.routers.guestbook-post.tls.certresolver=myresolver"
+      - "traefik.http.middlewares.quotebook-ratelimit-post.ratelimit.average=1"
+      - "traefik.http.middlewares.quotebook-ratelimit-post.ratelimit.period=1m"
+      - "traefik.http.routers.quotebook-post.rule=Host(`zenful.cloud`) && Method(`POST`)"
+      - "traefik.http.routers.quotebook-post.middlewares=quotebook-ratelimit-post"
+      - "traefik.http.routers.quotebook-post.entrypoints=websecure"
+      - "traefik.http.routers.quotebook-post.tls.certresolver=myresolver"
       # Proxy
       - "traefik.http.routers.proxy.rule=Host(`proxy.dreamsofcode.io`)"
       - "traefik.http.routers.proxy.entrypoints=websecure"
@@ -50,7 +50,7 @@ services:
       - POSTGRES_HOST=db
       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
       - POSTGRES_USER=postgres
-      - POSTGRES_DB=guestbook
+      - POSTGRES_DB=quotebook
       - POSTGRES_PORT=5432
       - POSTGRES_SSLMODE=disable
     deploy:
@@ -68,12 +68,12 @@ services:
     secrets:
       - db-password
     environment:
-      - POSTGRES_DB=guestbook
+      - POSTGRES_DB=quotebook
       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
     expose:
       - 5432
     healthcheck:
-      test: [ "CMD", "pg_isready" ]
+      test: ["CMD", "pg_isready"]
       interval: 10s
       timeout: 5s
       retries: 5

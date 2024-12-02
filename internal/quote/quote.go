@@ -1,4 +1,4 @@
-package guest
+package quote
 
 import (
 	"fmt"
@@ -8,22 +8,24 @@ import (
 	"github.com/google/uuid"
 )
 
-type Guest struct {
+type Quote struct {
 	ID        uuid.UUID
 	Message   string
+	Person	  string
 	CreatedAt time.Time
 	IP        net.IP
 }
 
-func NewGuest(message string, ip net.IP) (Guest, error) {
+func NewQuote(message string, person: string, ip net.IP) (Quote, error) {
 	id, err := uuid.NewV7()
 	if err != nil {
-		return Guest{}, fmt.Errorf("failed to create guest: %w", err)
+		return Quote{}, fmt.Errorf("failed to create quote: %w", err)
 	}
 
-	return Guest{
+	return Quote{
 		ID:        id,
 		Message:   message,
+		Person:    person,
 		CreatedAt: time.Now(),
 		IP:        ip,
 	}, nil

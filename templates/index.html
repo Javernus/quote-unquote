@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Guest Book</title>
+    <title>Quote Unquote</title>
     <link rel="stylesheet" href="/static/css/style.css" />
   </head>
   <body class="min-h-screen bg-gray-950 font-mono">
@@ -14,14 +14,15 @@
             <div class="px-4 sm:px-6 lg:px-8">
               <div class="sm:flex sm:items-center">
                 <div class="sm:flex-auto">
-                  <h1 class="text-4xl font-semibold leading-6 text-white">Guest Book</h1>
+                  <h1 class="text-4xl font-semibold leading-6 text-white">Quote Unquote</h1>
                 </div>
               </div>
               <div class="mt-10">
                 <form action="/" method="POST">
-                  <div class="flex flex-row">
-                    <input type="text" name="message" id="message" class="block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 rounded-r-none focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-md sm:leading-6" placeholder="Write a nice message">
-                    <button type="submit" class="block rounded-md rounded-l-none bg-blue-800 w-min text-nowrap px-4 py-2 text-center text-sm font-semibold text-white hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Add message</button>
+                  <div class="flex flex-col gap-y-2 gap-x-4">
+                    <input type="text" name="message" id="message" class="block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-md sm:leading-6" placeholder="Write a nice message">
+                    <input type="text" name="person" id="person" class="block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-md sm:leading-6" placeholder="Who said this?">
+                    <button type="submit" class="block rounded-md bg-blue-800 w-min text-nowrap px-4 py-2 text-center text-sm font-semibold text-white hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Submit quote</button>
                   </div>
                 </form>
 
@@ -29,7 +30,7 @@
                 <p class="mt-10 text-xl text-gray-300">
                     {{ .Total }} messages left by other users!
                   </p>
-              {{ if .Guests }}
+              {{ if .Quotes }}
               <div class="mt-4 flow-root">
                 <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                   <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
@@ -37,14 +38,16 @@
                       <thead>
                         <tr>
                           <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-white sm:pl-0">Message</th>
+                          <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-white sm:pl-0">Person</th>
                           <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-white">Timestamp</th>
                           </th>
                         </tr>
                       </thead>
                       <tbody class="divide-y divide-gray-800">
-                        {{ range .Guests }}
+                        {{ range .Quotes }}
                         <tr>
                           <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-300 sm:pl-0">{{ .Message }}</td>
+                          <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-300 sm:pl-0">{{ .Person }}</td>
                           <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-400">{{ .CreatedAt.Format "02 Jan 06 15:04 MST"  }}</td>
                         </tr>
                         {{ end }}

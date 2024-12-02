@@ -1,4 +1,4 @@
-module github.com/dreamsofcode-io/guestbook
+module github.com/javernus/quote-unquote
 
 go 1.23.0
 

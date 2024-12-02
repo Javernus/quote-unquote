@@ -27,7 +27,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.22.x'
+          go-version: "1.22.x"
       - name: Install dependencies
         run: go get .
       - name: Build
@@ -62,7 +62,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/dreamsofcode-io/guestbook:${{ needs.commit-hash.outputs.commit_hash }}
+          tags: ghcr.io/dreamsofcode-io/quotebook:${{ needs.commit-hash.outputs.commit_hash }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -71,17 +71,17 @@ jobs:
       - commit-hash
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: create env file
-      run: |
-        echo "GIT_COMMIT_HASH=${{ github.sha }}" >> env
-    - name: 'Docker Stack Deploy'
-      uses: cssnr/stack-deploy-action@v1
-      with:
-        name: 'guestbook'
-        file: 'docker-stack.yaml'
-        host: zenful.cloud
-        user: deploytest
-        ssh_key: ${{ secrets.DEPLOY_SSH_KEY }}
-        env_file: './env'
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: create env file
+        run: |
+          echo "GIT_COMMIT_HASH=${{ github.sha }}" >> env
+      - name: "Docker Stack Deploy"
+        uses: cssnr/stack-deploy-action@v1
+        with:
+          name: "quotebook"
+          file: "docker-stack.yaml"
+          host: zenful.cloud
+          user: deploytest
+          ssh_key: ${{ secrets.DEPLOY_SSH_KEY }}
+          env_file: "./env"
