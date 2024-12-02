@@ -12,8 +12,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	// "github.com/x-way/crawlerdetect"
 
-	"github.com/Javernus/quote-unquote/internal/quote"
-	"github.com/Javernus/quote-unquote/internal/repository"
+	"github.com/javernus/quote-unquote/internal/quote"
+	"github.com/javernus/quote-unquote/internal/repository"
 )
 
 type Quotebook struct {
