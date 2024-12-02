@@ -13,15 +13,13 @@ services:
     container_name: quote-unquote
     ports:
       - 8080:8080
-    secrets:
-      - db-password
     environment:
-      - POSTGRES_HOST=db
-      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=quotebook
-      - POSTGRES_PORT=5432
-      - POSTGRES_SSLMODE=disable
+      POSTGRES_HOST: db
+      POSTGRES_PASSWORD: "FloorcraftQuoteDatabasePassword"
+      POSTGRES_USER: postgres
+      POSTGRES_DB: quotebook
+      POSTGRES_PORT: 5432
+      POSTGRES_SSLMODE: disable
     depends_on:
       db:
         condition: service_healthy
@@ -36,13 +34,11 @@ services:
     image: postgres
     restart: always
     user: postgres
-    secrets:
-      - db-password
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - /opt/floorcraft/docker_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=quotebook
-      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+      POSTGRES_DB: quotebook
+      POSTGRES_PASSWORD: "FloorcraftQuoteDatabasePassword"
     expose:
       - 5432
     healthcheck:
@@ -50,8 +46,3 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-volumes:
-  db-data:
-secrets:
-  db-password:
-    file: db/password.txt

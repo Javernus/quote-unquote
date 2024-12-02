@@ -16,7 +16,7 @@ type Quote struct {
 	IP        net.IP
 }
 
-func NewQuote(message string, person: string, ip net.IP) (Quote, error) {
+func NewQuote(message string, person string, ip net.IP) (Quote, error) {
 	id, err := uuid.NewV7()
 	if err != nil {
 		return Quote{}, fmt.Errorf("failed to create quote: %w", err)

@@ -1,4 +1,4 @@
-# Guestbook
+# Quote Unquote
 
 This is the code used for the Dreams of Code video on setting up a production ready VPS using Docker, Docker Compose, Traefik, and Watchtower.
 

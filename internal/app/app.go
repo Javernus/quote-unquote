@@ -14,8 +14,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/redis/go-redis/v9"
 
-	"github.com/javernus/quote-unquote/internal/database"
-	"github.com/javernus/quote-unquote/internal/middleware"
+	"github.com/Javernus/quote-unquote/internal/database"
+	"github.com/Javernus/quote-unquote/internal/middleware"
 )
 
 type App struct {

@@ -9,7 +9,7 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"github.com/javernus/quote-unquote/internal/app"
+	"github.com/Javernus/quote-unquote/internal/app"
 )
 
 //go:embed migrations/*.sql

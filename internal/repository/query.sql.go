@@ -25,7 +25,7 @@ func (q *Queries) Count(ctx context.Context) (int64, error) {
 }
 
 const findAll = `-- name: FindAll :many
-SELECT id, message, ip, created_at, updated_at
+SELECT id, message, person, ip, created_at, updated_at
 FROM quote
 ORDER BY created_at DESC
 LIMIT $1
@@ -43,6 +43,7 @@ func (q *Queries) FindAll(ctx context.Context, limit int32) ([]Quote, error) {
 		if err := rows.Scan(
 			&i.ID,
 			&i.Message,
+			&i.Person,
 			&i.Ip,
 			&i.CreatedAt,
 			&i.UpdatedAt,
@@ -58,14 +59,15 @@ func (q *Queries) FindAll(ctx context.Context, limit int32) ([]Quote, error) {
 }
 
 const insert = `-- name: Insert :one
-INSERT INTO quote (id, message, created_at, updated_at, ip)
-VALUES ($1, $2, $3, $3, $4)
-RETURNING id, message, ip, created_at, updated_at
+INSERT INTO quote (id, message, person, created_at, updated_at, ip)
+VALUES ($1, $2, $3, $4, $4, $5)
+RETURNING id, message, person, ip, created_at, updated_at
 `
 
 type InsertParams struct {
 	ID        uuid.UUID
 	Message   string
+	Person	  string
 	CreatedAt time.Time
 	Ip        net.IP
 }
@@ -74,6 +76,7 @@ func (q *Queries) Insert(ctx context.Context, arg InsertParams) (Quote, error) {
 	row := q.db.QueryRow(ctx, insert,
 		arg.ID,
 		arg.Message,
+		arg.Person,
 		arg.CreatedAt,
 		arg.Ip,
 	)
@@ -81,6 +84,7 @@ func (q *Queries) Insert(ctx context.Context, arg InsertParams) (Quote, error) {
 	err := row.Scan(
 		&i.ID,
 		&i.Message,
+		&i.Person,
 		&i.Ip,
 		&i.CreatedAt,
 		&i.UpdatedAt,

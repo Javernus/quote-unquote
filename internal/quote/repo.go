@@ -19,7 +19,7 @@ func NewRepo(db *pgxpool.Pool) *Repo {
 
 var insertSQL = `
 INSERT INTO quote (id, message, person, created_at, updated_at, ip)
-VALUES ($1, $2, $3, $3, $4, $5)
+VALUES ($1, $2, $3, $4, $4, $5)
 `
 
 func (r *Repo) Insert(ctx context.Context, quote Quote) error {
@@ -52,7 +52,7 @@ func (r *Repo) FindAll(ctx context.Context, count int) ([]Quote, error) {
 	for rows.Next() {
 		var quote Quote
 
-		err = rows.Scan(&quote.ID, &quote.Message, &quote.CreatedAt, &quote.IP)
+		err = rows.Scan(&quote.ID, &quote.Message, &quote.Person, &quote.CreatedAt, &quote.IP)
 		if err != nil {
 			fmt.Println(err)
 			continue

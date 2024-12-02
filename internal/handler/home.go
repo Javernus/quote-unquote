@@ -12,8 +12,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	// "github.com/x-way/crawlerdetect"
 
-	"github.com/javernus/quote-unquote/internal/guest"
-	"github.com/javernus/quote-unquote/internal/repository"
+	"github.com/Javernus/quote-unquote/internal/quote"
+	"github.com/Javernus/quote-unquote/internal/repository"
 )
 
 type Quotebook struct {
@@ -107,7 +107,35 @@ func (h *Quotebook) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	quote, err := quote.NewQuote(message, ip)
+	psn, ok := r.Form["person"]
+	if !ok {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	person := strings.Join(psn, " ")
+
+	if strings.TrimSpace(person) == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		h.tmpl.ExecuteTemplate(w, "error.html", errorPage{
+			ErrorMessage: "Blank persons don't count",
+		})
+
+		return
+	}
+
+	if goaway.IsProfane(person) {
+		w.WriteHeader(http.StatusBadRequest)
+		h.tmpl.ExecuteTemplate(w, "error.html", errorPage{
+			ErrorMessage: fmt.Sprintf(
+				"Please don't use profanity. Your IP has been tracked %s",
+				ipStr,
+			),
+		})
+		return
+	}
+
+	quote, err := quote.NewQuote(message, person, ip)
 	if err != nil {
 		h.logger.Error("failed to create quote", slog.Any("error", err))
 		w.WriteHeader(http.StatusInternalServerError)
@@ -117,6 +145,7 @@ func (h *Quotebook) Create(w http.ResponseWriter, r *http.Request) {
 	_, err = h.repo.Insert(r.Context(), repository.InsertParams{
 		ID:        quote.ID,
 		Message:   quote.Message,
+		Person:    quote.Person,
 		CreatedAt: quote.CreatedAt,
 		Ip:        quote.IP,
 	})
